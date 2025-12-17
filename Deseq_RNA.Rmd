@@ -1,0 +1,299 @@
+---
+title: "DEseq"
+output: html_document
+date: "2025-11-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(DESeq2)
+library(tidyverse)
+library(xlsx)
+```
+
+
+```{r}
+raw_rna = read_excel("rawCounts.xlsx",sheet = "Malcaliphilum") # reading in the dataframe 
+raw_rna # initial look into the data
+raw_rna <- data.frame(raw_rna, row.names = 1) # 
+raw_rna
+#raw_rna = raw_rna[,-1]
+#View(raw_rna)
+#colnames(raw_rna)
+#View(raw_rna)
+
+#colnames(raw_rna)
+```
+
+
+```{r}
+col_data = read_xlsx("rawCounts.xlsx",sheet = "coldata") # this is the col data that is required for deseq. It contains condition data.
+
+col_data <- data.frame(col_data, row.names = 1) # this makes the 1st column the index 
+#col_data
+rownames(col_data)
+```
+
+
+
+Checking to see if the column names in the rna seq file are the same in the col_data file rows.
+
+```{r}
+
+all(colnames(raw_rna) %in% rownames(col_data))
+```
+
+Checking to see if there orders are the same in the rna seq data and col_data
+
+```{r}
+all(colnames(raw_rna) == rownames(col_data))
+```
+
+
+This first DEseq analysis is using lowca as the reference to generate the comparison for lowca_vs_Ca. 
+
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+
+dds
+
+
+dds$Condition = relevel(dds$Condition, ref = "lowca") # sets reference condition as lowca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+
+dds_lowca_vs_ca =results(dds, name=c("Condition_Ca_vs_lowca"))
+dds_lowca_vs_ca
+
+lowca_vs_ca = data.frame(dds_lowca_vs_ca)
+lowca_vs_ca
+
+
+
+
+                          
+                          
+```
+
+
+Producing the DE analysis for Ca vs lowFe
+
+
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+
+dds
+
+
+dds$Condition = relevel(dds$Condition, ref = "Ca") # sets reference condition as Ca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+dds_Ca_vs_lowFe =results(dds, name=c("Condition_lowFe_vs_Ca"))
+dds_Ca_vs_lowFe
+Ca_vs_lowFe = data.frame(dds_Ca_vs_lowFe)
+Ca_vs_lowFe
+```
+
+
+
+Producing the DE analysis for lowFe vs Fe
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+dds
+
+dds$Condition = relevel(dds$Condition, ref = "lowFe") # sets reference condition as lowca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+dds_lowFe_vs_Fe =results(dds, name=c("Condition_Fe_vs_lowFe"))
+dds_lowFe_vs_Fe
+lowFe_vs_Fe = data.frame(dds_lowFe_vs_Fe)
+lowFe_vs_Fe
+```
+
+
+Producing the DE analysis for Fe vs Mix
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+dds
+
+dds$Condition = relevel(dds$Condition, ref = "Mix") # sets reference condition as lowca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+dds_Fe_vs_Mix =results(dds, name=c("Condition_Fe_vs_Mix"))
+dds_Fe_vs_Mix
+Fe_vs_Mix = data.frame(dds_Fe_vs_Mix)
+Fe_vs_Mix
+```
+
+Producing the DE analysis for Mix vs Ni
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+dds
+
+dds$Condition = relevel(dds$Condition, ref = "Ni") # sets reference condition as lowca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+dds_Mix_vs_Ni =results(dds, name=c("Condition_Mix_vs_Ni"))
+dds_Mix_vs_Ni
+Mix_vs_Ni = data.frame(dds_Mix_vs_Ni)
+Mix_vs_Ni
+```
+
+
+
+
+Producing the DE analysis for Ni vs Nd
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+dds
+
+dds$Condition = relevel(dds$Condition, ref = "Nd") # sets reference condition as lowca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+dds_Ni_vs_Nd =results(dds, name=c("Condition_Ni_vs_Nd"))
+dds_Ni_vs_Nd
+Ni_vs_Nd = data.frame(dds_Ni_vs_Nd)
+Ni_vs_Nd
+```
+
+
+
+Producing the DE analysis for Nd vs W
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+dds
+
+dds$Condition = relevel(dds$Condition, ref = "W") # sets reference condition as lowca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+dds_Nd_vs_W =results(dds, name=c("Condition_Nd_vs_W"))
+dds_Nd_vs_W
+Nd_vs_W = data.frame(dds_Nd_vs_W)
+Nd_vs_W
+```
+Producing the DE analysis for W vs Cu
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = raw_rna,
+                              colData =  col_data,
+                              design = ~ Condition)
+dds
+
+dds$Condition = relevel(dds$Condition, ref = "Cu") # sets reference condition as lowca
+
+dds <- DESeq(dds)
+
+res <- results(dds)
+res
+
+resultsNames(dds)
+dds_W_vs_Cu =results(dds, name=c("Condition_W_vs_Cu"))
+dds_W_vs_Cu
+W_vs_Cu = data.frame(dds_W_vs_Cu)
+View(W_vs_Cu)
+```
+
+
+Now we are going to write all these DEseq results for each condition to a new excel dataframe.
+
+```{r}
+write.xlsx(lowca_vs_ca,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_by_Ryan.xlsx",
+           sheetName="lowca_vs_ca") # this code is writing the deseq results for lowca_vs_ca to a new excel sheet as titled, then writing
+# all that data to the defined sheet. This same process is then repeated for each condition with the exception of appending all the 
+# processeding data sets to the excel file. 
+
+
+write.xlsx(Ca_vs_lowFe,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_by_Ryan.xlsx",
+           sheetName="Ca_vs_lowFe", append=TRUE) # writing
+
+write.xlsx(lowFe_vs_Fe,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_by_Ryan.xlsx",
+           sheetName="lowFe_vs_Fe", append=TRUE)
+```
+
+```{r}
+write.xlsx(Fe_vs_Mix,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_by_Ryan.xlsx",
+           sheetName="Fe_vs_Mix", append=TRUE)
+
+write.xlsx(Mix_vs_Ni,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_by_Ryan.xlsx",
+           sheetName="Mix_vs_Ni", append=TRUE)
+```
+
+```{r}
+write.xlsx(Ni_vs_Nd,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_by_Ryan.xlsx",
+           sheetName="Ni_vs_Nd", append=TRUE)
+```
+
+```{r}
+write.xlsx(Nd_vs_W,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_Nd_vs_W.xlsx",
+           sheetName="Nd_vs_W")
+
+
+
+write.xlsx(W_vs_Cu,
+           file="/Users/ryanblevitt/Desktop/Transcriptomics/DE_Results_W_vs_Cu.xlsx",
+           sheetName="W_vs_Cu")
+
+
+```
+
